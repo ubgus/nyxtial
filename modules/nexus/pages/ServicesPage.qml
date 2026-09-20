@@ -215,5 +215,27 @@ PageBase {
             active: root.gpuItems[GlobalConfig.services.gpuType]
             onSelected: item => GlobalConfig.services.gpuType = root.gpuItems.indexOf(item)
         }
+
+        // Weather
+        SectionHeader {
+            text: Tr.tr("Weather")
+        }
+
+        ToggleRow {
+            first: true
+            text: Tr.tr("Fetch weather")
+            subtext: Tr.tr("Poll the forecast and current conditions over the network")
+            checked: GlobalConfig.services.weatherEnabled
+            onToggled: GlobalConfig.services.weatherEnabled = checked
+        }
+
+        ToggleRow {
+            last: true
+            text: Tr.tr("Detect location from IP")
+            subtext: Tr.tr("Ask ipwho.is for an approximate location; sends your public IP")
+            disabled: !GlobalConfig.services.weatherEnabled
+            checked: GlobalConfig.services.weatherIpLookup
+            onToggled: GlobalConfig.services.weatherIpLookup = checked
+        }
     }
 }
