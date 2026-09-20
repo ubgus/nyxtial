@@ -17,8 +17,8 @@ Singleton {
     property list<var> forecast
     property list<var> hourlyForecast
 
-    property bool ipApiRequestPending: false
-    property double ipApiBlockedUntil: 0
+    property bool geoLookupPending: false
+    property double geoLookupBlockedUntil: 0
     property bool citiesLoaded: false
     property string pendingCoords
 
@@ -52,15 +52,14 @@ Singleton {
             } else {
                 fetchCoordsFromCity(configLocation);
             }
-        } else if ((!loc || timer.elapsed() > 900) && !ipApiRequestPending && Date.now() >= ipApiBlockedUntil) {
-            ipApiRequestPending = true;
+        } else if (GlobalConfig.services.weatherIpLookup && (!loc || timer.elapsed() > 900) && !geoLookupPending && Date.now() >= geoLookupBlockedUntil) {
+            geoLookupPending = true;
 
-            // Free ip-api tier is HTTP-only. Opted in above, and only reached
-            // when weatherLocation is unset, so no IP leaves the machine unless
-            // the user both enables weather and declines to name a location.
-            Requests.get("http://ip-api.com/json?fields=status,message,city,lat,lon", (text, metadata) => {
-                ipApiRequestPending = false;
-                recordIpApiRateLimit(metadata);
+            // Opt-in only, never an implicit fallback: ipwho.is sees the public
+            // IP, so an empty weatherLocation leaves the widget blank instead.
+            Requests.get("https://ipwho.is/?fields=success,message,city,latitude,longitude", (text, metadata) => {
+                geoLookupPending = false;
+                recordRateLimit(metadata);
 
                 // Protect against stale responses overwriting the manually-set location,
                 // in case the config was updated while this request was in-flight.
@@ -71,15 +70,15 @@ Singleton {
                 try {
                     response = JSON.parse(text);
                 } catch (error) {
-                    console.warn(lc, `Unable to parse response from ip-api: ${error}`);
+                    console.warn(lc, `Unable to parse response from ipwho.is: ${error}`);
                     return;
                 }
 
-                const lat = Number(response.lat);
-                const lon = Number(response.lon);
+                const lat = Number(response.latitude);
+                const lon = Number(response.longitude);
 
-                if (response.status !== "success" || !Number.isFinite(lat) || !Number.isFinite(lon)) {
-                    console.warn(lc, `ip-api lookup failed: ${response.message ?? "invalid response"}`);
+                if (response.success !== true || !Number.isFinite(lat) || !Number.isFinite(lon)) {
+                    console.warn(lc, `ipwho.is lookup failed: ${response.message ?? "invalid response"}`);
                     return;
                 }
 
@@ -87,30 +86,25 @@ Singleton {
                 timer.restart();
                 loc = `${lat},${lon}`;
             }, (error, metadata) => {
-                ipApiRequestPending = false;
+                geoLookupPending = false;
 
-                if (!recordIpApiRateLimit(metadata))
-                    console.warn(lc, `ip-api request failed: ${error}`);
+                if (!recordRateLimit(metadata))
+                    console.warn(lc, `ipwho.is request failed: ${error}`);
             });
         }
     }
 
-    function recordIpApiRateLimit(metadata: var): bool {
-        const remainingHeader = metadata?.headers?.["x-rl"];
-        const exhausted = remainingHeader !== undefined && Number(remainingHeader) === 0;
-
-        if (metadata?.statusCode !== 429 && !exhausted)
+    function recordRateLimit(metadata: var): bool {
+        if (metadata?.statusCode !== 429)
             return false;
 
-        const ttlHeader = metadata?.headers?.["x-ttl"];
-        const ttl = Number(ttlHeader);
-
+        const ttl = Number(metadata?.headers?.["x-ttl"]);
         const delaySeconds = Number.isFinite(ttl) ? Math.max(1, Math.ceil(ttl) + 1) : 61;
 
         const delayMs = delaySeconds * 1000;
-        ipApiBlockedUntil = Date.now() + delayMs;
-        ipApiRetryTimer.interval = delayMs;
-        ipApiRetryTimer.restart();
+        geoLookupBlockedUntil = Date.now() + delayMs;
+        geoLookupRetryTimer.interval = delayMs;
+        geoLookupRetryTimer.restart();
 
         return true;
     }
@@ -360,12 +354,12 @@ Singleton {
     }
 
     Timer {
-        id: ipApiRetryTimer
+        id: geoLookupRetryTimer
 
         repeat: false
 
         onTriggered: {
-            const remaining = root.ipApiBlockedUntil - Date.now();
+            const remaining = root.geoLookupBlockedUntil - Date.now();
 
             if (remaining > 0) {
                 interval = Math.ceil(remaining);

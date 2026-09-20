@@ -236,7 +236,7 @@ For example, to automatically hide the bar on the monitor named `DP-1`:
 > - `nexus`: `networkRescanInterval`
 > - `notifs`: `actionOnClick`, `defaultExpireTimeout`, `expire`, `fullscreen`, `fullscreenExpireTimeout`
 > - `paths`: `lyricsDir`, `wallpaperDir`
-> - `services`: `audioIncrement`, `brightnessIncrement`, `clockFormat`, `dataUnits`, `defaultPlayer`, `gpuType`, `lyricsBackend`, `maxVolume`, `playerAliases`, `sensorUnits`, `smartScheme`, `visualiserBars`, `weatherEnabled`, `weatherLocation`, `weatherUnits`
+> - `services`: `audioIncrement`, `brightnessIncrement`, `clockFormat`, `dataUnits`, `defaultPlayer`, `gpuType`, `lyricsBackend`, `maxVolume`, `playerAliases`, `sensorUnits`, `smartScheme`, `visualiserBars`, `weatherEnabled`, `weatherIpLookup`, `weatherLocation`, `weatherUnits`
 > - `utilities`: `toasts.*`, `vpn.*`
 >
 > </details>
@@ -252,8 +252,10 @@ For example, to automatically hide the bar on the monitor named `DP-1`:
 > <ins>only add the ones you want to change</ins> to `shell.json`.
 >
 > Weather is opt-in: set `services.weatherEnabled` to `true` to poll the forecast. It is
-> disabled by default because, if `services.weatherLocation` is left empty, it geolocates
-> the public IP. Setting a location (`"City"` or `"lat,lon"`) avoids that lookup.
+> disabled by default because it contacts the network. Set `services.weatherLocation`
+> (`"City"` or `"lat,lon"`) to name a place; if it is empty the widget stays blank.
+> `services.weatherIpLookup` is a separate opt-in that asks ipwho.is for an approximate
+> location from your public IP, and is never used as an implicit fallback.
 
 <details><summary>Example config</summary>
 
@@ -753,6 +755,7 @@ For example, to automatically hide the bar on the monitor named `DP-1`:
     },
     "services": {
         "weatherEnabled": false,
+        "weatherIpLookup": false,
         "weatherLocation": "",
         "weatherUnits": "Auto",
         "sensorUnits": "Celsius",
