@@ -37,6 +37,12 @@ Item {
                 enabled: Config.dashboard.showPerformance
             },
             {
+                component: homelabComponent,
+                iconName: "lan",
+                text: Tr.tr("Homelab"),
+                enabled: GlobalConfig.dashboard.homelab.enabled
+            },
+            {
                 component: weatherComponent,
                 iconName: "cloud",
                 text: Tr.tr("Weather"),
@@ -180,6 +186,12 @@ Item {
                 id: weatherComponent
 
                 WeatherTab {}
+            }
+
+            Component {
+                id: homelabComponent
+
+                HomelabTab {}
             }
 
             Behavior on contentX {

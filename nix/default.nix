@@ -5,6 +5,7 @@
   makeWrapper,
   makeFontsConf,
   fish,
+  curl,
   pam,
   uwsm,
   ddcutil,
@@ -42,6 +43,7 @@
   runtimeDeps =
     [
       fish
+      curl
       uwsm
       ddcutil
       brightnessctl

@@ -16,6 +16,21 @@ class DashboardPerformance : public settings::ObjectNode {
     CONFIG_PROPERTY(bool, showNetwork, true)
 };
 
+class DashboardHomelabTarget : public settings::ObjectNode {
+    CONFIG_NODE(DashboardHomelabTarget, settings::ObjectNode)
+
+    CONFIG_PROPERTY(QString, name, {})
+    CONFIG_PROPERTY(QString, url, {})
+};
+CONFIG_LIST_TYPE(DashboardHomelabTarget, DashboardHomelabTargetList)
+
+class DashboardHomelab : public settings::ObjectNode {
+    CONFIG_NODE(DashboardHomelab, settings::ObjectNode)
+
+    CONFIG_PROPERTY(bool, enabled, false)
+    CONFIG_LIST(DashboardHomelabTargetList, targets, {})
+};
+
 class DashboardConfig : public settings::ObjectNode {
     CONFIG_NODE(DashboardConfig, settings::ObjectNode)
 
@@ -30,6 +45,7 @@ class DashboardConfig : public settings::ObjectNode {
     CONFIG_GLOBAL_PROPERTY(int, resourceUpdateInterval, 1000)
     CONFIG_PROPERTY(int, dragThreshold, 50)
     CONFIG_SUBOBJECT(DashboardPerformance, performance)
+    CONFIG_GLOBAL_SUBOBJECT(DashboardHomelab, homelab)
 };
 
 } // namespace caelestia::config

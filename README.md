@@ -229,7 +229,7 @@ For example, to automatically hide the bar on the monitor named `DP-1`:
 > - `appearance`: `anim.*`, `transparency.*`
 > - `bar.tray`: `hiddenIcons`, `iconSubs`
 > - `bar.workspaces`: `ignoredTags`, `specialWorkspaceIcons`, `windowIcons`, `workspaceIcons`
-> - `dashboard`: `mediaUpdateInterval`, `resourceUpdateInterval`
+> - `dashboard`: `homelab.*`, `mediaUpdateInterval`, `resourceUpdateInterval`
 > - `general`: `apps.*`, `battery.*`, `idle.*`, `logo`
 > - `launcher`: `actionPrefix`, `actions`, `enableDangerousActions`, `favouriteApps`, `hiddenApps`, `specialPrefix`, `useFuzzy.*`, `vimKeybinds`
 > - `lock`: `enableFprint`, `enableHowdy`, `maxFprintTries`, `maxHowdyTries`, `triggerHowdyOnWake`
@@ -578,6 +578,15 @@ For example, to automatically hide the bar on the monitor named `DP-1`:
             "showMemory": true,
             "showStorage": true,
             "showNetwork": true
+        },
+        "homelab": {
+            "enabled": false,
+            "targets": [
+                {
+                    "name": "Example service",
+                    "url": "https://service.example.com/health"
+                }
+            ]
         }
     },
     "launcher": {
