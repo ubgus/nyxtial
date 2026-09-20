@@ -40,6 +40,9 @@ Singleton {
     }
 
     function reload(): void {
+        if (!GlobalConfig.services.weatherEnabled)
+            return;
+
         const configLocation = GlobalConfig.services.weatherLocation;
 
         if (configLocation) {
@@ -52,6 +55,9 @@ Singleton {
         } else if ((!loc || timer.elapsed() > 900) && !ipApiRequestPending && Date.now() >= ipApiBlockedUntil) {
             ipApiRequestPending = true;
 
+            // Free ip-api tier is HTTP-only. Opted in above, and only reached
+            // when weatherLocation is unset, so no IP leaves the machine unless
+            // the user both enables weather and declines to name a location.
             Requests.get("http://ip-api.com/json?fields=status,message,city,lat,lon", (text, metadata) => {
                 ipApiRequestPending = false;
                 recordIpApiRateLimit(metadata);
@@ -228,6 +234,9 @@ Singleton {
     }
 
     function fetchWeatherData(): void {
+        if (!GlobalConfig.services.weatherEnabled)
+            return;
+
         const url = getWeatherUrl();
         if (url === "")
             return;
@@ -345,7 +354,7 @@ Singleton {
 
     Timer {
         interval: 3600000 // 1 hour
-        running: true
+        running: GlobalConfig.services.weatherEnabled
         repeat: true
         onTriggered: fetchWeatherData()
     }
