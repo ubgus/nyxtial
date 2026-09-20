@@ -17,7 +17,10 @@ Searcher {
                 workingDirectory: entry.workingDirectory
             });
         else
-            entry.execute();
+            Quickshell.execDetached({
+                command: ["uwsm", "app", "--", ...entry.command],
+                workingDirectory: entry.workingDirectory
+            });
     }
 
     function search(search: string): var {

@@ -5,6 +5,8 @@
   makeWrapper,
   makeFontsConf,
   fish,
+  pam,
+  uwsm,
   ddcutil,
   brightnessctl,
   networkmanager,
@@ -40,6 +42,7 @@
   runtimeDeps =
     [
       fish
+      uwsm
       ddcutil
       brightnessctl
       networkmanager
@@ -125,6 +128,9 @@ in
     dontStrip = debug;
 
     prePatch = ''
+      substituteInPlace assets/pam.d/passwd \
+        --replace-fail pam_unix.so ${pam}/lib/security/pam_unix.so \
+        --replace-fail pam_faillock.so ${pam}/lib/security/pam_faillock.so
       substituteInPlace assets/pam.d/fprint \
         --replace-fail pam_fprintd.so /run/current-system/sw/lib/security/pam_fprintd.so
       substituteInPlace assets/pam.d/howdy \
