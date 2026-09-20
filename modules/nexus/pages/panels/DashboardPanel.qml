@@ -4,6 +4,9 @@ import QtQuick
 import QtQuick.Layouts
 import Caelestia.Config
 import Caelestia.I18n
+import qs.components
+import qs.components.controls
+import qs.services
 import qs.modules.nexus.common
 
 PageBase {
@@ -75,6 +78,108 @@ PageBase {
             text: Tr.tr("Weather")
             checked: Config.dashboard.showWeather
             onToggled: GlobalConfig.dashboard.showWeather = checked
+        }
+
+        // Homelab
+        SectionHeader {
+            text: Tr.tr("Homelab")
+        }
+
+        ToggleRow {
+            first: true
+            last: true
+            text: Tr.tr("Homelab tab")
+            subtext: Tr.tr("Show watched endpoint availability in the dashboard")
+            checked: GlobalConfig.dashboard.homelab.enabled
+            onToggled: GlobalConfig.dashboard.homelab.enabled = checked
+        }
+
+        SectionHeader {
+            text: Tr.tr("Watched endpoints")
+        }
+
+        TextFieldRow {
+            id: watchAddress
+
+            first: true
+            last: GlobalConfig.dashboard.homelab.targets.values.length === 0
+            label: Tr.tr("Watch address")
+            subtext: Tr.tr("HTTP address to check, such as a health endpoint")
+            errorText: Tr.tr("Must be an http or https address")
+            placeholderText: "https://service.example.com/health"
+            validate: /^https?:\/\/\S+$/
+            onEditingFinished: value => {
+                const url = value.trim();
+                if (!url || !field.valid)
+                    return;
+
+                if (!GlobalConfig.dashboard.homelab.targets.values.some(target => target.url === url)) {
+                    const name = url.replace(/^https?:\/\//, "").split("/")[0];
+                    GlobalConfig.dashboard.homelab.targets.insert({
+                        name: name,
+                        url: url
+                    });
+                }
+                clear();
+            }
+        }
+
+        Repeater {
+            model: GlobalConfig.dashboard.homelab.targets.values
+
+            delegate: ConnectedRect {
+                required property int index
+                required property var modelData
+
+                last: index === GlobalConfig.dashboard.homelab.targets.values.length - 1
+                Layout.fillWidth: true
+                implicitHeight: row.implicitHeight + row.anchors.margins * 2
+
+                RowLayout {
+                    id: row
+
+                    anchors.fill: parent
+                    anchors.margins: Tokens.padding.medium
+                    anchors.leftMargin: Tokens.padding.largeIncreased
+                    anchors.rightMargin: Tokens.padding.large
+                    spacing: Tokens.spacing.medium
+
+                    MaterialIcon {
+                        text: "lan"
+                        color: Colours.palette.m3onSurfaceVariant
+                        fontStyle: Tokens.font.icon.small
+                    }
+
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        spacing: 0
+
+                        StyledText {
+                            Layout.fillWidth: true
+                            text: modelData.name
+                            font: Tokens.font.body.small
+                            elide: Text.ElideRight
+                        }
+
+                        StyledText {
+                            Layout.fillWidth: true
+                            text: modelData.url
+                            color: Colours.palette.m3outline
+                            font: Tokens.font.label.small
+                            elide: Text.ElideRight
+                        }
+                    }
+
+                    IconButton {
+                        type: IconButton.Text
+                        isRound: true
+                        icon: "delete"
+                        inactiveOnColour: Colours.palette.m3error
+                        label.fill: 0
+                        onClicked: GlobalConfig.dashboard.homelab.targets.remove(index)
+                    }
+                }
+            }
         }
 
         // Performance widgets
