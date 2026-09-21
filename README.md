@@ -1,16 +1,22 @@
-<h1 align=center>caelestia-shell</h1>
+<h1 align=center>nyxtial</h1>
 
 <div align=center>
 
-![GitHub last commit](https://img.shields.io/github/last-commit/caelestia-dots/shell?style=for-the-badge&labelColor=101418&color=9ccbfb)
-![GitHub Repo stars](https://img.shields.io/github/stars/caelestia-dots/shell?style=for-the-badge&labelColor=101418&color=b9c8da)
-![GitHub repo size](https://img.shields.io/github/repo-size/caelestia-dots/shell?style=for-the-badge&labelColor=101418&color=d3bfe6)
+![GitHub last commit](https://img.shields.io/github/last-commit/ubgus/nyxtial?style=for-the-badge&labelColor=101418&color=9ccbfb)
+![GitHub Repo stars](https://img.shields.io/github/stars/ubgus/nyxtial?style=for-the-badge&labelColor=101418&color=b9c8da)
+![GitHub repo size](https://img.shields.io/github/repo-size/ubgus/nyxtial?style=for-the-badge&labelColor=101418&color=d3bfe6)
 [![Ko-Fi donate](https://img.shields.io/badge/donate-kofi?style=for-the-badge&logo=ko-fi&logoColor=ffffff&label=ko-fi&labelColor=101418&color=f16061&link=https%3A%2F%2Fko-fi.com%2Fsoramane)](https://ko-fi.com/soramane)
 [![Discord invite](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fdiscordapp.com%2Fapi%2Finvites%2FBGDCFCmMBk%3Fwith_counts%3Dtrue&query=approximate_member_count&style=for-the-badge&logo=discord&logoColor=ffffff&label=discord&labelColor=101418&color=96f1f1&link=https%3A%2F%2Fdiscord.gg%2FBGDCFCmMBk)][discord]
 
 </div>
 
 https://github.com/user-attachments/assets/0840f496-575c-4ca6-83a8-87bb01a85c5f
+
+> [!NOTE]
+> Nyxtial is a personal fork of the original
+> [Caelestia Shell](https://github.com/caelestia-dots/shell). It collects
+> personal desktop customizations and deeper Nix/Home Manager integration
+> while preserving the upstream shell's foundation.
 
 ## Components
 
@@ -41,7 +47,7 @@ and likely to be unstable/have bugs. Regular users are recommended to use the st
 You can run the shell directly via `nix run`:
 
 ```sh
-nix run github:caelestia-dots/shell#with-cli
+nix run github:ubgus/nyxtial#with-cli
 ```
 
 Or add it to your system configuration:
@@ -52,7 +58,7 @@ Or add it to your system configuration:
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     caelestia-shell = {
-      url = "github:caelestia-dots/shell";
+      url = "github:ubgus/nyxtial";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -109,7 +115,7 @@ Then build and install using CMake.
 
 ```sh
 cd $XDG_CONFIG_HOME/quickshell
-git clone https://github.com/caelestia-dots/shell.git caelestia
+git clone https://github.com/ubgus/nyxtial.git caelestia
 
 cd caelestia
 cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/
@@ -936,7 +942,7 @@ See the [manual installation](#manual-installation) section for the correspondin
 ### I want to disable ___ feature!
 
 Please read the [configuring](#configuring) section.
-If there is no corresponding option, make a [feature request](https://github.com/caelestia-dots/shell/issues/new?template=feature.yml).
+If there is no corresponding option, make a [feature request](https://github.com/ubgus/nyxtial/issues/new?template=feature.yml).
 
 ### How do I make my colour scheme change to match my wallpaper?
 
@@ -971,11 +977,11 @@ Finally, another thank you to all the configs I took inspiration from (only one 
 
 ## Stonks 📈
 
-<a href="https://www.star-history.com/#caelestia-dots/shell&Date">
+<a href="https://www.star-history.com/#ubgus/nyxtial&Date">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=caelestia-dots/shell&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=caelestia-dots/shell&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=caelestia-dots/shell&type=Date" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ubgus/nyxtial&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=ubgus/nyxtial&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=ubgus/nyxtial&type=Date" />
  </picture>
 </a>
 
