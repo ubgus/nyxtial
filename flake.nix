@@ -38,7 +38,6 @@
       pkgs = pkgsOf.${system};
     in rec {
       caelestia-shell = pkgs.callPackage ./nix {
-        rev = self.rev or self.dirtyRev;
         stdenv = pkgs.clangStdenv;
         quickshell = inputs.quickshell.packages.${system}.default.override {
           withX11 = false;
@@ -59,8 +58,8 @@
         mkShell = pkgs.mkShell.override {stdenv = shell.stdenv;};
       in
         mkShell {
-          inputsFrom = [shell shell.plugin shell.extras];
-          packages = with pkgs; [clazy material-symbols rubik nerd-fonts.caskaydia-cove];
+          inputsFrom = [shell shell.plugin];
+          packages = with pkgs; [clazy fish material-symbols rubik nerd-fonts.caskaydia-cove];
           CAELESTIA_XKB_RULES_PATH = "${pkgs.xkeyboard-config}/share/xkeyboard-config-2/rules/base.lst";
         };
     });
