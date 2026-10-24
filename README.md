@@ -13,34 +13,24 @@
 https://github.com/user-attachments/assets/0840f496-575c-4ca6-83a8-87bb01a85c5f
 
 > [!NOTE]
-> Nyxtial is a personal fork of the original
-> [Caelestia Shell](https://github.com/caelestia-dots/shell). It collects
-> personal desktop customizations and deeper Nix/Home Manager integration
-> while preserving the upstream shell's foundation.
+> Nyxtial is a personal, Nix-focused customization fork of the original
+> [Caelestia Shell](https://github.com/caelestia-dots/shell). It deliberately
+> reduces the supported surface and is intended only for Nix, NixOS, and
+> Nix-compatible systems.
+
+## Upstream references
+
+Links to Caelestia Shell, its dotfiles, or its CLI lead to the original
+project, not Nyxtial. They may describe features or platforms this fork does
+not support.
 
 ## Components
 
--   Widgets: [`Quickshell`](https://quickshell.outfoxxed.me)
--   Window manager: [`Hyprland`](https://hypr.land)
--   Dots: [`caelestia`][dots-repo]
+- Widgets: [`Quickshell`](https://quickshell.outfoxxed.me)
+- Window manager: [`Hyprland`](https://hypr.land)
+- Dotfiles: [original Caelestia dotfiles][dots-repo]
 
 ## Installation
-
-> [!NOTE]
-> This repo is for Caelestia's desktop shell only. If you want installation instructions
-> for the entire dotfiles (which include this shell), head to [the main repo][dots-repo] instead.
-
-### Arch Linux
-
-> [!WARNING]
-> If you want to make your own changes/tweaks to the shell, do NOT edit the files installed by the AUR
-> package. Instead, follow the instructions in the [manual installation section](#manual-installation).
-
-The shell is available from the AUR as `caelestia-shell`. You can install it with an AUR helper (recommended),
-like [`paru`](https://github.com/morganamilo/paru), or by manually downloading the PKGBUILD and running `makepkg -si`.
-
-A package following the latest commit also exists as `caelestia-shell-git`. This is bleeding-edge
-and likely to be unstable/have bugs. Regular users are recommended to use the stable package (`caelestia-shell`).
 
 ### Nix
 
@@ -71,71 +61,6 @@ or a devshell. The `default` package does not include the CLI.
 You can then run the shell with `caelestia-shell`.
 
 For home-manager, you can also use Caelestia's Home Manager module (explained in [the configuration section](#home-manager-module)), which installs and configures the shell and CLI.
-
-### Manual installation
-
-Dependencies:
-
--   [`caelestia-cli`](https://github.com/caelestia-dots/cli)
--   [`quickshell-git`](https://git.outfoxxed.me/quickshell/quickshell) - this has to be the git version, not the latest tagged version
--   `glibc`
--   `gcc-libs`
--   [`ddcutil`](https://github.com/rockowitz/ddcutil)
--   [`brightnessctl`](https://github.com/Hummer12007/brightnessctl)
--   [`libcava`](https://github.com/LukashonakV/cava)
--   [`networkmanager`](https://gitlab.freedesktop.org/NetworkManager/NetworkManager)
--   [`lm_sensors`](https://github.com/lm-sensors/lm-sensors)
--   [`aubio`](https://github.com/aubio/aubio)
--   [`libpipewire`](https://github.com/PipeWire/pipewire)
--   [`libqalculate`](https://github.com/Qalculate/libqalculate)
--   [`power-profiles-daemon`](https://gitlab.freedesktop.org/upower/power-profiles-daemon)
--   [`ttf-material-symbols-variable`](https://github.com/google/material-design-icons)
--   [`ttf-rubik-vf`](https://github.com/googlefonts/rubik)
--   [`ttf-cascadia-code-nerd`](https://github.com/ryanoasis/nerd-fonts)
--   `qt6-base`
--   `qt6-declarative`
--   `qt6-imageformats`
--   [`qt6-m3shapes-git`](https://github.com/soramanew/m3shapes)
--   [`swappy`](https://github.com/jtheoof/swappy)
--   [`fish`](https://github.com/fish-shell/fish-shell)
--   [`bash`](https://www.gnu.org/software/bash)
-
-Build dependencies:
-
--   [`cmake`](https://gitlab.kitware.com/cmake/cmake)
--   [`ninja`](https://github.com/ninja-build/ninja)
--   `qt6-shadertools`
-
-> [!IMPORTANT]
-> The commands below (and in the "Updating" section) assume `$XDG_CONFIG_HOME` is set.
-> If it is unset, substitute it with the path to your config folder (typically `~/.config`).
-
-To install the shell manually, install all dependencies and clone this repo to `$XDG_CONFIG_HOME/quickshell/caelestia`.
-Then build and install using CMake.
-
-```sh
-cd $XDG_CONFIG_HOME/quickshell
-git clone https://github.com/ubgus/nyxtial.git caelestia
-
-cd caelestia
-cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/
-cmake --build build
-sudo cmake --install build
-```
-
-> [!TIP]
-> You can customise the installation location via the CMake flags `INSTALL_QMLDIR` and `INSTALL_QSCONFDIR`
-> for the QML plugin and Quickshell config directories respectively.
->
-> For example, installing to `~/.config/quickshell/caelestia` for easy local changes:
->
-> ```sh
-> mkdir -p ~/.config/quickshell/caelestia
-> cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/ -DINSTALL_QSCONFDIR="$HOME/.config/quickshell/caelestia"
-> cmake --build build
-> sudo cmake --install build
-> sudo chown -R $USER ~/.config/quickshell/caelestia
-> ```
 
 ## Usage
 
@@ -175,23 +100,8 @@ Use `caelestia wallpaper -h` for more info about this command.
 
 ## Updating
 
-### Packaged install (AUR)
-
-If using the full dotfiles or the CLI, run `caelestia update` to perform a full system update and
-update the dots.
-Otherwise, if you installed the shell on its own, update your system using your AUR helper (e.g., `paru`).
-
-### Manual install
-
-If you installed the shell manually by cloning the repo, you can update by pulling the changes from git
-in the local checkout.
-
-For example, if you installed to `$XDG_CONFIG_HOME/quickshell/caelestia`:
-
-```sh
-cd $XDG_CONFIG_HOME/quickshell/caelestia
-git pull
-```
+Update the Nyxtial flake input in your Nix configuration, then rebuild your NixOS,
+Home Manager, or other Nix-compatible configuration.
 
 ## Configuring
 
@@ -210,7 +120,6 @@ hyprctl monitors -j | jq -r '.[].name'
 
 Options set in these files will **override** the respective options in the global config. Any options not present in
 per-monitor configs will inherit their values from the global config.
-
 
 For example, to automatically hide the bar on the monitor named `DP-1`:
 
@@ -283,40 +192,135 @@ For example, to automatically hide the bar on the monitor named `DP-1`:
             "workspaces": "Rubik",
             "headline": {
                 "family": "GoogleSansFlex",
-                "large": { "size": 32, "weight": 500, "italic": false, "vaxes": { "ROND": 25 } },
-                "medium": { "size": 28, "weight": 500, "italic": false, "vaxes": { "ROND": 25 } },
-                "small": { "size": 24, "weight": 500, "italic": false, "vaxes": { "ROND": 25 } }
+                "large": {
+                    "size": 32,
+                    "weight": 500,
+                    "italic": false,
+                    "vaxes": { "ROND": 25 }
+                },
+                "medium": {
+                    "size": 28,
+                    "weight": 500,
+                    "italic": false,
+                    "vaxes": { "ROND": 25 }
+                },
+                "small": {
+                    "size": 24,
+                    "weight": 500,
+                    "italic": false,
+                    "vaxes": { "ROND": 25 }
+                }
             },
             "title": {
                 "family": "GoogleSansFlex",
-                "large": { "size": 22, "weight": 500, "italic": false, "vaxes": { "ROND": 25 } },
-                "medium": { "size": 16, "weight": 500, "italic": false, "vaxes": { "ROND": 25 } },
-                "small": { "size": 14, "weight": 500, "italic": false, "vaxes": { "ROND": 25 } }
+                "large": {
+                    "size": 22,
+                    "weight": 500,
+                    "italic": false,
+                    "vaxes": { "ROND": 25 }
+                },
+                "medium": {
+                    "size": 16,
+                    "weight": 500,
+                    "italic": false,
+                    "vaxes": { "ROND": 25 }
+                },
+                "small": {
+                    "size": 14,
+                    "weight": 500,
+                    "italic": false,
+                    "vaxes": { "ROND": 25 }
+                }
             },
             "body": {
                 "family": "GoogleSansFlex",
-                "large": { "size": 16, "weight": 400, "italic": false, "vaxes": { "ROND": 25 } },
-                "medium": { "size": 14, "weight": 400, "italic": false, "vaxes": { "ROND": 25 } },
-                "small": { "size": 12, "weight": 400, "italic": false, "vaxes": { "ROND": 25 } }
+                "large": {
+                    "size": 16,
+                    "weight": 400,
+                    "italic": false,
+                    "vaxes": { "ROND": 25 }
+                },
+                "medium": {
+                    "size": 14,
+                    "weight": 400,
+                    "italic": false,
+                    "vaxes": { "ROND": 25 }
+                },
+                "small": {
+                    "size": 12,
+                    "weight": 400,
+                    "italic": false,
+                    "vaxes": { "ROND": 25 }
+                }
             },
             "label": {
                 "family": "GoogleSansFlex",
-                "large": { "size": 14, "weight": 500, "italic": false, "vaxes": { "ROND": 25 } },
-                "medium": { "size": 12, "weight": 500, "italic": false, "vaxes": { "ROND": 25 } },
-                "small": { "size": 11, "weight": 400, "italic": false, "vaxes": { "ROND": 25 } }
+                "large": {
+                    "size": 14,
+                    "weight": 500,
+                    "italic": false,
+                    "vaxes": { "ROND": 25 }
+                },
+                "medium": {
+                    "size": 12,
+                    "weight": 500,
+                    "italic": false,
+                    "vaxes": { "ROND": 25 }
+                },
+                "small": {
+                    "size": 11,
+                    "weight": 400,
+                    "italic": false,
+                    "vaxes": { "ROND": 25 }
+                }
             },
             "mono": {
                 "family": "CaskaydiaCove NF",
-                "large": { "size": 16, "weight": 400, "italic": false, "vaxes": {} },
-                "medium": { "size": 14, "weight": 400, "italic": false, "vaxes": {} },
-                "small": { "size": 12, "weight": 400, "italic": false, "vaxes": {} }
+                "large": {
+                    "size": 16,
+                    "weight": 400,
+                    "italic": false,
+                    "vaxes": {}
+                },
+                "medium": {
+                    "size": 14,
+                    "weight": 400,
+                    "italic": false,
+                    "vaxes": {}
+                },
+                "small": {
+                    "size": 12,
+                    "weight": 400,
+                    "italic": false,
+                    "vaxes": {}
+                }
             },
             "icon": {
                 "family": "Material Symbols Rounded",
-                "extraLarge": { "size": 36, "weight": 400, "italic": false, "vaxes": {} },
-                "large": { "size": 24, "weight": 400, "italic": false, "vaxes": {} },
-                "medium": { "size": 18, "weight": 400, "italic": false, "vaxes": {} },
-                "small": { "size": 15, "weight": 400, "italic": false, "vaxes": {} }
+                "extraLarge": {
+                    "size": 36,
+                    "weight": 400,
+                    "italic": false,
+                    "vaxes": {}
+                },
+                "large": {
+                    "size": 24,
+                    "weight": 400,
+                    "italic": false,
+                    "vaxes": {}
+                },
+                "medium": {
+                    "size": 18,
+                    "weight": 400,
+                    "italic": false,
+                    "vaxes": {}
+                },
+                "small": {
+                    "size": 15,
+                    "weight": 400,
+                    "italic": false,
+                    "vaxes": {}
+                }
             }
         },
         "anim": {
@@ -469,10 +473,7 @@ For example, to automatically hide the bar on the monitor named `DP-1`:
                     "icon": "monitor_heart"
                 }
             ],
-            "ignoredTags": [
-                "hide_in_bar",
-                "xwl_popup"
-            ],
+            "ignoredTags": ["hide_in_bar", "xwl_popup"],
             "windowIcons": [
                 {
                     "regex": "steam(_app_(default|[0-9]+))?",
@@ -774,7 +775,9 @@ For example, to automatically hide the bar on the monitor named `DP-1`:
         "maxVolume": 1.0,
         "smartScheme": true,
         "defaultPlayer": "Spotify",
-        "playerAliases": [{ "from": "com.github.th_ch.youtube_music", "to": "YT Music" }],
+        "playerAliases": [
+            { "from": "com.github.th_ch.youtube_music", "to": "YT Music" }
+        ],
         "lyricsBackend": "Auto"
     },
     "session": {
@@ -937,16 +940,16 @@ Check out the configuring section on the [dots repo](https://github.com/caelesti
 
 ### I want to make my own changes to other stuff!
 
-See the [manual installation](#manual-installation) section for the corresponding repo.
+Use Nyxtial as a flake input and carry local changes in your Nix configuration.
 
-### I want to disable ___ feature!
+### I want to disable \_\_\_ feature!
 
 Please read the [configuring](#configuring) section.
 If there is no corresponding option, make a [feature request](https://github.com/ubgus/nyxtial/issues/new?template=feature.yml).
 
 ### How do I make my colour scheme change to match my wallpaper?
 
-Set a wallpaper via `>wallpaper` in the launcher or `caelestia wallpaper`, and set the scheme to the dynamic scheme via 
+Set a wallpaper via `>wallpaper` in the launcher or `caelestia wallpaper`, and set the scheme to the dynamic scheme via
 `>scheme` in the launcher or `caelestia scheme set`, e.g.:
 
 ```sh
@@ -973,16 +976,16 @@ which helped me a lot with learning how to use Quickshell.
 
 Finally, another thank you to all the configs I took inspiration from (only one for now):
 
--   [Axenide/Ax-Shell](https://github.com/Axenide/Ax-Shell)
+- [Axenide/Ax-Shell](https://github.com/Axenide/Ax-Shell)
 
 ## Stonks 📈
 
 <a href="https://www.star-history.com/#ubgus/nyxtial&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ubgus/nyxtial&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=ubgus/nyxtial&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=ubgus/nyxtial&type=Date" />
- </picture>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ubgus/nyxtial&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=ubgus/nyxtial&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=ubgus/nyxtial&type=Date" />
+  </picture>
 </a>
 
 [dots-repo]: https://github.com/caelestia-dots/caelestia

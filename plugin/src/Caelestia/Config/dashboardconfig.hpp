@@ -3,7 +3,7 @@
 #include "settings/objectnode.hpp"
 #include "common.hpp"
 
-namespace caelestia::config {
+namespace caelestia::shell::config {
 
 class DashboardPerformance : public settings::ObjectNode {
     CONFIG_NODE(DashboardPerformance, settings::ObjectNode)
@@ -48,4 +48,4 @@ class DashboardConfig : public settings::ObjectNode {
     CONFIG_GLOBAL_SUBOBJECT(DashboardHomelab, homelab)
 };
 
-} // namespace caelestia::config
+} // namespace caelestia::shell::config
