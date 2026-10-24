@@ -5,6 +5,7 @@
 #include <pipewire/pipewire.h>
 
 #include <algorithm>
+#include <cstdint>
 #include <mutex>
 #include <span>
 #include <stop_token>
@@ -155,10 +156,14 @@ void PipeWireWorker::processStream() {
     }
 
     const spa_buffer* buf = buffer->buffer;
-    const auto* samples = reinterpret_cast<const qint16*>(buf->datas[0].data);
-    if (samples != nullptr) {
-        const quint32 count = buf->datas[0].chunk->size / sizeof(qint16);
-        m_collector->loadChunk(samples, count);
+    const auto& data = buf->datas[0];
+    if (data.data != nullptr && data.chunk != nullptr && data.maxsize > 0) {
+        const auto offset = data.chunk->offset % data.maxsize;
+        const auto size = std::min(data.chunk->size, data.maxsize);
+        const auto firstSize = std::min(size, data.maxsize - offset);
+        const auto* bytes = static_cast<const uint8_t*>(data.data);
+        m_collector->loadChunk(reinterpret_cast<const qint16*>(bytes + offset), firstSize / sizeof(qint16));
+        m_collector->loadChunk(reinterpret_cast<const qint16*>(bytes), (size - firstSize) / sizeof(qint16));
     }
 
     pw_stream_queue_buffer(m_stream, buffer);

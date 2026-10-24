@@ -58,7 +58,7 @@ void CircularBuffer::clear() {
     m_data.clear();
     emit countChanged();
 
-    if (m_max > 0.0) {
+    if (m_max != 0.0) {
         m_max = 0.0;
         emit maximumChanged();
     }
