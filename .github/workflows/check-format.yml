@@ -7,69 +7,24 @@ on:
   pull_request:
 
 jobs:
-  changes:
-    uses: ./.github/workflows/detect-changes.yml
-    permissions:
-      pull-requests: read
-    with:
-      filter-group: format
-
-  check-qml:
-    needs: changes
-    if: needs.changes.outputs.format-qml == 'true'
+  check-format:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/${{ github.repository_owner }}/shell-arch-env:latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout source
         uses: actions/checkout@v7
 
-      - name: Check QML format
-        shell: fish {0}
+      - name: Install Nix
+        uses: nixbuild/nix-quick-install-action@v34
+
+      - name: Check formatting
         run: |
-          /usr/lib/qt6/bin/qmlformat --version
-          for file in (string match -v 'build/*' **.qml)
-            /usr/lib/qt6/bin/qmlformat $file | diff -u $file - || exit 1
-          end
+          nix develop --command bash -euo pipefail <<'EOF'
+          find . -path ./build -prune -o -name '*.qml' -print0 \
+            | while IFS= read -r -d '' file; do
+                qmlformat "$file" | diff -u "$file" -
+              done
           python3 scripts/qml-lint-conventions.py
-
-  check-cpp:
-    needs: changes
-    if: needs.changes.outputs.format-cpp == 'true'
-    runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/${{ github.repository_owner }}/shell-arch-env:latest
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v7
-
-      - name: Check C++ format
-        shell: fish {0}
-        run: |
-          clang-format --version
-          find plugin -name '*.cpp' -o -name '*.hpp' \
-            | xargs clang-format --dry-run --Werror
-
-  format-check:
-    if: always()
-    needs:
-      - changes
-      - check-qml
-      - check-cpp
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v7
-
-      - name: Verify formatting results
-        uses: ./.github/actions/verify-checks
-        with:
-          needs: ${{ toJSON(needs) }}
-          checks: |
-            {
-              "check-qml": "format-qml",
-              "check-cpp": "format-cpp"
-            }
+          find plugin -type f \( -name '*.cpp' -o -name '*.hpp' \) -print0 \
+            | xargs -0 clang-format --dry-run --Werror
+          EOF
