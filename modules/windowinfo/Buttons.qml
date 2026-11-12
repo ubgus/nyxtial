@@ -155,6 +155,7 @@ ColumnLayout {
         ToolTip.text: text
         Accessible.role: Accessible.Button
         Accessible.name: text
+        Accessible.onPressAction: clicked()
 
         StateLayer {
             id: tlLayer
