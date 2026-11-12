@@ -130,8 +130,8 @@ ColumnLayout {
         Layout.fillWidth: true
         Layout.preferredWidth: 400
         implicitHeight: content.implicitHeight + Tokens.padding.extraLargeIncreased
-        radius: Tokens.rounding.large
-        color: Colours.tPalette.m3surfaceContainer
+        radius: Tokens.rounding.extraLarge
+        color: Qt.alpha(Colours.tPalette.m3surfaceContainer, Colours.tPalette.m3surfaceContainer.a * (Colours.transparency.enabled ? 0.8 : 1))
         visible: root.shouldBeVisible || root.isClosing
         opacity: root.shouldBeVisible && !root.isClosing ? 1 : 0
         scale: root.shouldBeVisible && !root.isClosing ? 1 : 0.7

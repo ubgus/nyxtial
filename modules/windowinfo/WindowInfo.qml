@@ -38,8 +38,8 @@ Item {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
-                color: Colours.tPalette.m3surfaceContainer
-                radius: Tokens.rounding.large
+                color: Qt.alpha(Colours.tPalette.m3surfaceContainer, Colours.tPalette.m3surfaceContainer.a * (Colours.transparency.enabled ? 0.8 : 1))
+                radius: Tokens.rounding.extraLarge
                 clip: true
 
                 Details {
@@ -51,8 +51,8 @@ Item {
                 Layout.fillWidth: true
                 Layout.preferredHeight: buttons.implicitHeight
 
-                color: Colours.tPalette.m3surfaceContainer
-                radius: Tokens.rounding.large
+                color: Qt.alpha(Colours.tPalette.m3surfaceContainer, Colours.tPalette.m3surfaceContainer.a * (Colours.transparency.enabled ? 0.8 : 1))
+                radius: Tokens.rounding.extraLarge
 
                 Buttons {
                     id: buttons

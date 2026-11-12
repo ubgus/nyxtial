@@ -134,7 +134,7 @@ Item {
         anchors.centerIn: parent
 
         sourceComponent: ClipRect {
-            radius: Tokens.rounding.extraLarge
+            radius: Tokens.rounding.extraExtraLarge
             implicitWidth: nexusInner.implicitWidth
             implicitHeight: nexusInner.implicitHeight
 

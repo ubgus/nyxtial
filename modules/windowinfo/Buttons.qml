@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import QtQuick.Controls
 import QtQuick.Layouts
 import Caelestia.Config
 import Caelestia.I18n
@@ -108,40 +109,58 @@ ColumnLayout {
     }
 
     RowLayout {
-        Layout.fillWidth: true
         Layout.leftMargin: Tokens.padding.large
         Layout.rightMargin: Tokens.padding.large
         Layout.bottomMargin: Tokens.padding.large
 
-        spacing: root.client?.lastIpcObject.floating ? Tokens.spacing.medium : Tokens.spacing.small
+        spacing: Tokens.spacing.small
 
-        WButton {
-            color: Colours.palette.m3secondaryContainer
-            textColor: Colours.palette.m3onSecondaryContainer
-            text: root.client?.lastIpcObject.floating ? Tr.tr("Tile") : Tr.tr("Float")
-            onClicked: Hypr.dispatch(Hypr.usingLua ? `hl.dsp.window.float({ window = "address:0x${root.client?.address}" })` : `togglefloating address:0x${root.client?.address}`)
+        // macOS order: red (kill), yellow (pin, floating only), green (float/tile)
+        TrafficLight {
+            color: "#FF5F57"
+            text: Tr.tr("Kill")
+            onClicked: Hypr.dispatch(Hypr.usingLua ? `hl.dsp.window.kill({ window = "address:0x${root.client?.address}" })` : `killwindow address:0x${root.client?.address}`)
         }
 
         Loader {
             asynchronous: true
             active: root.client?.lastIpcObject.floating ?? false
-            Layout.fillWidth: active
             Layout.leftMargin: active ? 0 : -parent.spacing
-            Layout.rightMargin: active ? 0 : -parent.spacing
 
-            sourceComponent: WButton {
-                color: Colours.palette.m3secondaryContainer
-                textColor: Colours.palette.m3onSecondaryContainer
+            sourceComponent: TrafficLight {
+                color: "#FEBC2E"
                 text: root.client?.lastIpcObject.pinned ? Tr.tr("Unpin") : Tr.tr("Pin")
                 onClicked: Hypr.dispatch(Hypr.usingLua ? `hl.dsp.window.pin({ window = "address:0x${root.client?.address}" })` : `pin address:0x${root.client?.address}`)
             }
         }
 
-        WButton {
-            color: Colours.palette.m3errorContainer
-            textColor: Colours.palette.m3onErrorContainer
-            text: Tr.tr("Kill")
-            onClicked: Hypr.dispatch(Hypr.usingLua ? `hl.dsp.window.kill({ window = "address:0x${root.client?.address}" })` : `killwindow address:0x${root.client?.address}`)
+        TrafficLight {
+            color: "#28C840"
+            text: root.client?.lastIpcObject.floating ? Tr.tr("Tile") : Tr.tr("Float")
+            onClicked: Hypr.dispatch(Hypr.usingLua ? `hl.dsp.window.float({ window = "address:0x${root.client?.address}" })` : `togglefloating address:0x${root.client?.address}`)
+        }
+    }
+
+    component TrafficLight: StyledRect {
+        property string text
+
+        signal clicked
+
+        implicitWidth: 12
+        implicitHeight: 12
+        radius: Tokens.rounding.full
+
+        // Labels moved from button text to tooltip/accessible name
+        ToolTip.visible: tlLayer.containsMouse
+        ToolTip.text: text
+        Accessible.role: Accessible.Button
+        Accessible.name: text
+
+        StateLayer {
+            id: tlLayer
+
+            color: "white" // brighten on hover instead of the default darken
+            onClicked: parent.clicked()
         }
     }
 

@@ -40,7 +40,7 @@ StyledRect {
         return false;
     }
 
-    color: Colours.tPalette.m3surfaceContainer
+    color: Qt.alpha(Colours.tPalette.m3surfaceContainer, Colours.tPalette.m3surfaceContainer.a * (Colours.transparency.enabled ? 0.8 : 1))
     radius: Tokens.rounding.full
 
     clip: true
